@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import librosa 
 
 #takes path of audio file and returns Bpm of audio
