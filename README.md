@@ -10,6 +10,7 @@
 ###  Find suitiable midi dataset.
 ####   - Potentialy The Lakh MIDI Dataset found in 3 link above
 ### Write Training code to create a model based on dataset.
+####  - Most likely a combonation of RNN and LTSM 
 ### Write Generate midi based of model.
 ### Write Backing Track generator (select key,tonality,chord progession,timing and tempo) output midi file values could be randomly selected for one click composition.
 ### Transpose generated midi file to fit generated backing track.
