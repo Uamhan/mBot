@@ -7,7 +7,7 @@
 #### https://colinraffel.com/projects/lmd/
 ### - Write Training code to create a model based on dataset.
 ### - Write Generate midi based of model.
-### - Write Backing Track generator (select key,tonality,chord progession,timing and tempo) output midi file.
+### - Write Backing Track generator (select key,tonality,chord progession,timing and tempo) output midi file values could be randomly selected for one click composition.
 ### - Transpose generated midi file to fit generated backing track.
 #### Potentialy use music21 library to get key of generated midi (http://web.mit.edu/music21/doc/index.html)
 #### Write python script to take in midi sample establish its key and make nescary transpositions to desired key.
