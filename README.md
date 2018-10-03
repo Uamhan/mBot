@@ -5,6 +5,7 @@
 ### 3. https://colinraffel.com/projects/lmd/
 ### 4. http://web.mit.edu/music21/doc/index.html
 ### 5. https://www.pygame.org/docs/ref/music.html
+### 6. http://www.deeplearningbook.org/contents/rnn.html
 
 ## TODO
 ###  Find suitiable midi dataset.
