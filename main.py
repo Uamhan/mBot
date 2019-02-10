@@ -69,6 +69,9 @@ class App(QWidget):
         self.lbl4.move(150, 120)
         comboT.activated[str].connect(self.setTone) 
 
+        #ToDo add play button that will simply play the scale selected for now
+         
+
         self.show()
  
 
