@@ -11,6 +11,8 @@ import glob
 
 #array storeing each note
 notes = []
+#number of notes to be generated
+numNotes = 250
 
 #Read in and covert midi files into useable format.
 for file in glob.glob("blues/v2/*.mid"):
@@ -106,8 +108,8 @@ intToNote = dict((number, note) for number, note in enumerate(pitchNames))
 pattern = networkInput[start]
 #array that will store the output predictions
 predictionOutput = []
-# generate 250 notes
-for note_index in range(250):
+# generate numNotes notes
+for note_index in range(numNotes):
     #converts the prediction input to a format that can be used with the lstm predict function
     predictionInput = np.reshape(pattern, (1, len(pattern), 1))
     predictionInput = predictionInput / float(nVocab)
@@ -153,34 +155,39 @@ for pattern in predictionOutput:
         outputNotes.append(newChord)
     #if note a chord its simply a single note in this case we create a new note object assign the current offset assign default instrument and append to the output notes
     else:
-        newNote = note.Note(pattern)
-        newNote.offset = offset
-        newNote.storedInstrument = instrument.Piano()
-        outputNotes.append(newNote)
+        isRestSelector = np.random.randint(0,8,1)
+        if(isRestSelector==1):
+            newNote = note.Rest()
+            newNote.duration = offSetAmount
+        else
+            newNote = note.Note(pattern)
+            newNote.offset = offset
+            newNote.storedInstrument = instrument.Piano()
+            outputNotes.append(newNote)
     #we increase the offset after each generated note has been added
-    
-#    if(offSetRepeat == 0):
-#        offSetSelector = np.random.randint(0, 7, 1)
-#        if(offSetSelector == 0):
-#            offSetAmount = 1
-#            offSetRepeat = 1
-#        elif(offSetSelector == 1) or (offSetSelector == 2):
-#            offSetAmount = 0.25
-#            offSetRepeat = 4
-#        elif(offSetSelector == 3):
-#            offSetAmount = 2
-#            offSetRepeat = 2
-#        else : 
-#            offSetAmount = 0.5
-#            offSetRepeat = 2
-    
-    
-#    offset += offSetAmount
-#    offSetRepeat -= 1
-    
-    offset += 0.5
-
+    #if statement that generates 1 bar or four beat rythms
+    if(offSetRepeat == 0):
+        offSetSelector = np.random.randint(0, 8, 1)
+        if(offSetSelector == 0):
+            offSetAmount = 1
+            offSetRepeat = 4
+        elif(offSetSelector == 1):
+            offSetAmount = 0.25
+            offSetRepeat = 16
+        elif(offSetSelector == 2):
+            offSetAmount = 2
+            offSetRepeat = 2
+        elif(offSetSelector == 3)
+            offSetAmount = 4
+            offSetRepeat = 1
+        else : 
+            offSetAmount = 0.5
+            offSetRepeat = 8   
+    #adds offset amount to total ofset of generated peice and reduces the offset repeat amount by 1
+    offset += offSetAmount
+    offSetRepeat -= 1
+   
     #create a stream from our output notes
     #write the output stream to the file OUTPUT.mid
-    MIDIStream = stream.Stream(outputNotes)
-    MIDIStream.write('midi',fp='OUTPUT.mid')
+MIDIStream = stream.Stream(outputNotes)
+MIDIStream.write('midi',fp='OUTPUT.mid')
