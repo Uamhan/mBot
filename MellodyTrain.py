@@ -15,7 +15,7 @@ notes = []
 numNotes = 250
 
 #Read in and covert midi files into useable format.
-for file in glob.glob("blues/v2/*.mid"):
+for file in glob.glob("Classical/*/*.mid"):
     #using music21 coverter we parse midi files into the variable midi
     midi = converter.parse(file)
     print("Parsing %s" % file)
@@ -94,10 +94,10 @@ filepath = "weights-improvement-{epoch:02d}-{loss:.4f}-bigger.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=0,save_best_only=False,mode='min')    
 callbacks_list = [checkpoint]     
 
-#model.load_weights('weights-improvement-150-0.1658-bigger.hdf5')
-#trains the network with 150 itterations
-model.fit(normalNetworkInput, networkOutput, epochs=150, batch_size=64, callbacks=callbacks_list)
-#loads weights from file created file.
+#model.load_weights('blues1.hdf5')
+#trains the network with 100 itterations
+model.fit(normalNetworkInput, networkOutput, epochs=100, batch_size=64, callbacks=callbacks_list)
+
 
 
 #randomly select a start point in our network inputs
@@ -159,7 +159,7 @@ for pattern in predictionOutput:
         if(isRestSelector==1):
             newNote = note.Rest()
             newNote.duration = offSetAmount
-        else
+        else:
             newNote = note.Note(pattern)
             newNote.offset = offset
             newNote.storedInstrument = instrument.Piano()
@@ -177,7 +177,7 @@ for pattern in predictionOutput:
         elif(offSetSelector == 2):
             offSetAmount = 2
             offSetRepeat = 2
-        elif(offSetSelector == 3)
+        elif(offSetSelector == 3):
             offSetAmount = 4
             offSetRepeat = 1
         else : 
