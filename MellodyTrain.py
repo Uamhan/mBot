@@ -94,9 +94,9 @@ filepath = "weights-improvement-{epoch:02d}-{loss:.4f}-bigger.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=0,save_best_only=False,mode='min')    
 callbacks_list = [checkpoint]     
 
-#model.load_weights('blues1.hdf5')
+model.load_weights('ClassicalWeights.hdf5')
 #trains the network with 100 itterations
-model.fit(normalNetworkInput, networkOutput, epochs=100, batch_size=64, callbacks=callbacks_list)
+#model.fit(normalNetworkInput, networkOutput, epochs=50, batch_size=64, callbacks=callbacks_list)
 
 
 
@@ -133,6 +133,7 @@ for note_index in range(numNotes):
 #offset represents how far from the start of the midi file the note should be played.
 offset = 0
 offSetRepeat = 0
+duration = 1.0
 #output notes will be the final string of notes with offset values to be converted to midi
 outputNotes=[]
 #sets note and chord objects based on models predicitions
@@ -155,34 +156,41 @@ for pattern in predictionOutput:
         outputNotes.append(newChord)
     #if note a chord its simply a single note in this case we create a new note object assign the current offset assign default instrument and append to the output notes
     else:
-        isRestSelector = np.random.randint(0,8,1)
-        if(isRestSelector==1):
-            newNote = note.Rest()
-            newNote.duration = offSetAmount
-        else:
-            newNote = note.Note(pattern)
-            newNote.offset = offset
-            newNote.storedInstrument = instrument.Piano()
-            outputNotes.append(newNote)
+        #isRestSelector = np.random.randint(0,16,1)
+        #if(isRestSelector==1):
+            #newNote = note.Rest()
+            #newNote.quarterLength = duration
+            #newNote.offset = offSetAmount
+        #else:
+        newNote = note.Note(pattern)
+        newNote.quaterLength = duration
+        newNote.offset = offset
+        newNote.storedInstrument = instrument.Piano()
+        outputNotes.append(newNote)
     #we increase the offset after each generated note has been added
     #if statement that generates 1 bar or four beat rythms
     if(offSetRepeat == 0):
         offSetSelector = np.random.randint(0, 8, 1)
+        #quater notes
         if(offSetSelector == 0):
             offSetAmount = 1
             offSetRepeat = 4
+            duration = 1.0
+        #16th notes
         elif(offSetSelector == 1):
             offSetAmount = 0.25
             offSetRepeat = 16
+            duration = 0.166666666
+        #half notes
         elif(offSetSelector == 2):
             offSetAmount = 2
             offSetRepeat = 2
-        elif(offSetSelector == 3):
-            offSetAmount = 4
-            offSetRepeat = 1
+            duration = 2.0
+        #eight notes
         else : 
             offSetAmount = 0.5
             offSetRepeat = 8   
+            duration = 0.5
     #adds offset amount to total ofset of generated peice and reduces the offset repeat amount by 1
     offset += offSetAmount
     offSetRepeat -= 1

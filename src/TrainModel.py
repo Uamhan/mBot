@@ -1,4 +1,13 @@
-from imports import *
+from music21 import converter,instrument,note,chord,stream
+import tensorflow as tf
+from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D,LSTM,Activation
+from keras.models import Sequential
+import keras.models
+import numpy as np
+from keras.utils import np_utils
+from keras.callbacks import ModelCheckpoint
+import glob
+import pickle
 import LoadModel
 
 def Train():
@@ -8,7 +17,7 @@ def Train():
     numNotes = 250
 
     #Read in and covert midi files into useable format.
-    for file in glob.glob("Classical/*/*.mid"):
+    for file in glob.glob("../Classical/*/*.mid"):
         #using music21 coverter we parse midi files into the variable midi
         midi = converter.parse(file)
         print("Parsing %s" % file)
@@ -59,7 +68,7 @@ def Train():
 
     #saves varibles needed for prediction to file
     with open('objs.pkl', 'wb') as f:
-        pickle.dump([networkInput, pitchNames, numNotes, nVocab,normalNetworkInput], f)
+        pickle.dump([networkInput, pitchNames, numNotes, nVocab, normalNetworkInput], f)
 
     model = LoadModel.createModel()
 

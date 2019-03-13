@@ -1,4 +1,14 @@
-from Imports import *
+from music21 import converter,instrument,note,chord,stream
+import tensorflow as tf
+from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D,LSTM,Activation
+from keras.models import Sequential
+import keras.models
+import numpy as np
+from keras.utils import np_utils
+from keras.callbacks import ModelCheckpoint
+import glob
+import pickle
+
 def Predict(model):
     
     with open('objs.pkl','rb') as f:  
@@ -59,37 +69,15 @@ def Predict(model):
             outputNotes.append(newChord)
         #if note a chord its simply a single note in this case we create a new note object assign the current offset assign default instrument and append to the output notes
         else:
-            isRestSelector = np.random.randint(0,8,1)
-            if(isRestSelector==1):
-                newNote = note.Rest()
-                newNote.duration = offSetAmount
-            else:
                 newNote = note.Note(pattern)
                 newNote.offset = offset
                 newNote.storedInstrument = instrument.Piano()
                 outputNotes.append(newNote)
         #we increase the offset after each generated note has been added
         #if statement that generates 1 bar or four beat rythms
-        if(offSetRepeat == 0):
-            offSetSelector = np.random.randint(0, 8, 1)
-            if(offSetSelector == 0):
-                offSetAmount = 1
-                offSetRepeat = 4
-            elif(offSetSelector == 1):
-                offSetAmount = 0.25
-                offSetRepeat = 16
-            elif(offSetSelector == 2):
-                offSetAmount = 2
-                offSetRepeat = 2
-            elif(offSetSelector == 3):
-                offSetAmount = 4
-                offSetRepeat = 1
-            else : 
-                offSetAmount = 0.5
-                offSetRepeat = 8   
+         
         #adds offset amount to total ofset of generated peice and reduces the offset repeat amount by 1
-        offset += offSetAmount
-        offSetRepeat -= 1
+        offset += 0.5
    
         #create a stream from our output notes
         #write the output stream to the file OUTPUT.mid
