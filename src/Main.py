@@ -10,6 +10,8 @@ import glob
 import pickle
 from tkinter import *
 from tkinter.ttk import *
+from tkinter import filedialog
+import os
 
 import LoadModel
 import PredictMelody
@@ -22,17 +24,67 @@ import base64
 
 #playbutton method
 def play():
-    print("play")
+
+    #songfile to be played.
+    Song_file = "OUTPUT.mid"
+    #midi mixer settings.
+    buffer = 1024    # number of samples
+    bitsize = -16   # unsigned 16 bit
+    freq = 44100    # CD quality audio
+    mono_stereo = 2    # 1 is mono, 2 is stereo
+    #initilises midi mixer using the arguments above.
+    pygame.mixer.init(freq, bitsize, mono_stereo, buffer)
+    play_song(Song_file)
+
+def getKey():
+    
+    #getts user values from combo boxes
+    key = keycombo.get()
+    mm = mmcombo.get()
+    fs = fscombo.get()
+    #sets the key value based on the user input.
+    #major keys denoted by upercase and minor by lower case
+    #sharp keys followed by #
+    #flat keys followed by b
+    if(mm == "Major"):
+        key.upper()
+    if(mm == "Minor"):
+        key.lower()
+    if(fs == "Flat"):
+        key=key+"b"
+    if(fs == "Sharp"):
+        key=key+"#"
+
+    return key
 
 def generate():
-    print("generate")
+    dislbl.configure(text="Generating new song this may take a minute.")
+    window.update()
+    #predict melody
+    MIDI = PredictMelody.Predict(model)
+    #transpose melody
+    desiredKey= getKey()
+    TMIDI = Transpose.TransposeMelody(MIDI,desiredKey)
+    #set melody tempo
+    newTempo = int(tempocombo.get())
+    FMIDI = SetTempo.SetTempo(TMIDI,newTempo)
+    #output mellody as midi file
+    FMIDI.write('midi',fp='OUTPUT.mid')
+    dislbl.configure(text="Generating complete hit play to listen or save to save midi file.")
+    window.update()
 
 def save():
-    print("save")
+
+    s = converter.parse('OUTPUT.mid')
+    savelocation =  filedialog.asksaveasfilename(initialdir = "/",title = "Save file",filetypes = (("midi files","*.mid"),("all files","*.*")))
+    dislbl.configure(text="File Saved.")
+    s.write('midi', savelocation+".mid")
+    
+    
 
 #plays song
 def play_song(music_file):
-    
+
     timer = pygame.time.Clock()
     try:
         pygame.mixer.music.load(music_file)
@@ -50,7 +102,7 @@ window = Tk()
 window.title("mBot NeuralNet Music Generator")
 
 # gui labels
-headerlbl = Label(window,text="Mbot Muisc Generator",font=("Arial Bold",32))
+headerlbl = Label(window,text="Mbot Music Generator",font=("Arial Bold",32))
 tempolbl = Label(window,text="Select song Tempo",font=("Arial",12))
 keylbl = Label(window,text="Select song key",font=("Arial",12))
 mmlbl = Label(window,text="Select song tonality",font=("Arial",12))
@@ -113,8 +165,6 @@ window.rowconfigure(5,pad = 10)
 window.rowconfigure(6,pad = 10)
 window.geometry("800x400")
 
-#initilise window loop
-window.mainloop()
 
 #load model
 #train model if none found
@@ -124,28 +174,7 @@ try:
 except:
     #train model
     model = TrainModel.Train()
-    
-#predict melody
-MIDI = PredictMelody.Predict(model)
-#transpose melody
-desiredKey= 'F'
-TMIDI = Transpose.TransposeMelody(MIDI,desiredKey)
-#set melody tempo
-#
-newTempo = 120
-FMIDI = SetTempo.SetTempo(TMIDI,newTempo)
-#output mellody as midi file
-FMIDI.write('midi',fp='OUTPUT.mid')
 
-#songfile to be played.
-Song_file = "OUTPUT.mid"
-#midi mixer settings.
+#initilise window loop
+window.mainloop()
 
-buffer = 1024    # number of samples
-bitsize = -16   # unsigned 16 bit
-freq = 44100    # CD quality audio
-mono_stereo = 2    # 1 is mono, 2 is stereo
-#initilises midi mixer using the arguments above.
-pygame.mixer.init(freq, bitsize, mono_stereo, buffer)
-
-play_song(Song_file)
