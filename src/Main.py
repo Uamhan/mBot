@@ -8,6 +8,8 @@ from keras.utils import np_utils
 from keras.callbacks import ModelCheckpoint
 import glob
 import pickle
+from tkinter import *
+from tkinter.ttk import *
 
 import LoadModel
 import PredictMelody
@@ -18,7 +20,17 @@ import TrainModel
 import pygame.midi
 import base64
 
-#playws
+#playbutton method
+def play():
+    print("play")
+
+def generate():
+    print("generate")
+
+def save():
+    print("save")
+
+#plays song
 def play_song(music_file):
     
     timer = pygame.time.Clock()
@@ -33,6 +45,77 @@ def play_song(music_file):
         timer.tick(30)
 
 
+#initilises gui window
+window = Tk()
+window.title("mBot NeuralNet Music Generator")
+
+# gui labels
+headerlbl = Label(window,text="Mbot Muisc Generator",font=("Arial Bold",32))
+tempolbl = Label(window,text="Select song Tempo",font=("Arial",12))
+keylbl = Label(window,text="Select song key",font=("Arial",12))
+mmlbl = Label(window,text="Select song tonality",font=("Arial",12))
+fslbl = Label(window,text="Select song's key Acidental",font=("Arial",12))
+dislbl = Label(window,text="Select values above and click generate",font=("Arial Bold",12))
+
+
+#combo boxes
+#tempo combobox
+tempocombo = Combobox(window)
+tempocombo["values"]=(10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200)
+tempocombo.current(11)
+#key comboBox
+keycombo = Combobox(window)
+keycombo["values"]=("A","B","C","D","E","F","G")
+keycombo.current(2)
+#MajorMinor combobox
+mmcombo = Combobox(window)
+mmcombo["values"]=("Major","Minor")
+mmcombo.current(0)
+#flatsharp combobox
+fscombo = Combobox(window)
+fscombo["values"]=("Flat","Sharp","Neutral")
+fscombo.current(2)
+
+#buttons
+generatebtn = Button(window, text="Generate", command=generate)
+savebtn = Button(window, text="Save", command=save)
+playbtn = Button(window, text="Play", command=play)
+
+
+#placements of gui elements
+#combobox placements
+tempocombo.grid(column=1,row=1)
+keycombo.grid(column=1,row=2)
+mmcombo.grid(column=1,row=3)
+fscombo.grid(column=1,row=4)
+#lable placements.
+headerlbl.grid(column=0,row=0,columnspan=3)
+tempolbl.grid(column=0,row=1,sticky="w")
+keylbl.grid(column=0,row=2,sticky="w")
+mmlbl.grid(column=0,row=3,sticky="w")
+fslbl.grid(column=0,row=4,sticky="w")
+dislbl.grid(column=0,row=5,sticky="w",pady=15)
+#button placements
+generatebtn.grid(column=0, row=6)
+savebtn.grid(column=1, row=6)
+playbtn.grid(column=2, row=6)
+
+#window settings
+window.columnconfigure(0,minsize=200)
+window.columnconfigure(1,minsize=200)
+window.columnconfigure(2,minsize=200)
+window.rowconfigure(0,pad = 10)
+window.rowconfigure(1,pad = 10)
+window.rowconfigure(2,pad = 10)
+window.rowconfigure(3,pad = 10)
+window.rowconfigure(4,pad = 10)
+window.rowconfigure(5,pad = 10)
+window.rowconfigure(6,pad = 10)
+window.geometry("800x400")
+
+#initilise window loop
+window.mainloop()
+
 #load model
 #train model if none found
 try:
@@ -45,7 +128,7 @@ except:
 #predict melody
 MIDI = PredictMelody.Predict(model)
 #transpose melody
-desiredKey= 'a'
+desiredKey= 'F'
 TMIDI = Transpose.TransposeMelody(MIDI,desiredKey)
 #set melody tempo
 #
