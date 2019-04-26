@@ -163,7 +163,9 @@ window.rowconfigure(3,pad = 10)
 window.rowconfigure(4,pad = 10)
 window.rowconfigure(5,pad = 10)
 window.rowconfigure(6,pad = 10)
-window.geometry("800x400")
+window.geometry("900x400")
+
+
 
 
 #load model
